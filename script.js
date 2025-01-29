@@ -8,6 +8,11 @@ const translateBtn = document.querySelector("button");
 const icons = document.querySelectorAll(".row i");
 const API_KEY = "AIzaSyCfbt01E4qgAWqL1XMQ4FgXVfl3HRIcNBc";
 
+const showError = (message) => {
+    toText.value = "";
+    alert(message);
+};
+
 selectTag.forEach((tag, id) => {
     for (let country_code in countries) {
         let selected = id == 0 ? country_code == "en-GB" ? "selected" : "" : country_code == "si-LK" ? "selected" : "";
@@ -26,7 +31,7 @@ exchageIcon.addEventListener("click", () => {
 });
 
 fromText.addEventListener("keyup", () => {
-    if(!fromText.value) {
+    if(!fromText.value.trim()) {
         toText.value = "";
     }
 });
@@ -35,7 +40,12 @@ translateBtn.addEventListener("click", async () => {
     let text = fromText.value.trim(),
         translateFrom = selectTag[0].value,
         translateTo = selectTag[1].value;
-    if (!text) return;
+    
+    if (!text) {
+        showError("Please enter text to translate.");
+        return;
+    }
+    
     toText.setAttribute("placeholder", "Translating...");
     let apiUrl = `https://translation.googleapis.com/language/translate/v2?key=${API_KEY}`;
     let requestBody = {
@@ -44,30 +54,43 @@ translateBtn.addEventListener("click", async () => {
         target: translateTo,
         format: "text"
     };
-    fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody)
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
+    
+    try {
+        let response = await fetch(apiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP Error! Status: ${response.status}`);
+        }
+
+        let data = await response.json();
+
+        if (data.error) {
+            throw new Error(data.error.message);
+        }
+
         toText.value = data.data.translations[0].translatedText;
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        toText.value = "Translation failed!";
-    });
+    } catch (error) {
+        console.error("Translation error:", error);
+        showError("Translation failed! Please try again later.");
+    }
 });
 
 icons.forEach(icon => {
     icon.addEventListener("click", ({target}) => {
-        if(!fromText.value || !toText.value) return;
+        if(!fromText.value.trim() || !toText.value.trim()) return;
         if(target.classList.contains("fa-copy")) {
             if(target.id == "from") {
-                navigator.clipboard.writeText(fromText.value);
+                navigator.clipboard.writeText(fromText.value)
+                    .then(() => alert("Text copied!"))
+                    .catch(() => alert("Failed to copy text."));
             } else {
-                navigator.clipboard.writeText(toText.value);
+                navigator.clipboard.writeText(toText.value)
+                    .then(() => alert("Text copied!"))
+                    .catch(() => alert("Failed to copy text."));
             }
         } else {
             let utterance;
