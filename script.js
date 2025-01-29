@@ -6,6 +6,7 @@ const selectTag = document.querySelectorAll("select");
 const exchageIcon = document.querySelector(".exchange");
 const translateBtn = document.querySelector("button");
 const icons = document.querySelectorAll(".row i");
+const API_KEY = "AIzaSyCfbt01E4qgAWqL1XMQ4FgXVfl3HRIcNBc";
 
 selectTag.forEach((tag, id) => {
     for (let country_code in countries) {
@@ -30,16 +31,32 @@ fromText.addEventListener("keyup", () => {
     }
 });
 
-translateBtn.addEventListener("click", () => {
+translateBtn.addEventListener("click", async () => {
     let text = fromText.value.trim(),
-    translateFrom = selectTag[0].value,
-    translateTo = selectTag[1].value;
-    if(!text) return;
+        translateFrom = selectTag[0].value,
+        translateTo = selectTag[1].value;
+    if (!text) return;
     toText.setAttribute("placeholder", "Translating...");
-    let apiUrl = `https://api.mymemory.translated.net/get?q=${text}&langpair=${translateFrom}|${translateTo}`;
-    fetch(apiUrl).then(res => res.json()).then(data => {
+    let apiUrl = `https://translation.googleapis.com/language/translate/v2?key=${API_KEY}`;
+    let requestBody = {
+        q: text,
+        source: translateFrom,
+        target: translateTo,
+        format: "text"
+    };
+    fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody)
+    })
+    .then(response => response.json())
+    .then(data => {
         console.log(data);
-        toText.value = data.responseData.translatedText;
+        toText.value = data.data.translations[0].translatedText;
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        toText.value = "Translation failed!";
     });
 });
 
