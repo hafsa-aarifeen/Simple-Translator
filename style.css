@@ -22,6 +22,22 @@ body{
     border-radius: 7px;
     box-shadow: 0 10px 20px rgba(0,0,0,0.01);
 }
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+.app-header i {
+    font-size: 30px;
+    color: #5372F0;
+    margin-right: 10px;
+}
+.app-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+}
 .wrapper{
     border-radius: 5px;
     border: 1px solid #ccc;
