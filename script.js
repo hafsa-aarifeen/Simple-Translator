@@ -10,7 +10,12 @@ const API_KEY = "AIzaSyCfbt01E4qgAWqL1XMQ4FgXVfl3HRIcNBc";
 
 const showError = (message) => {
     toText.value = "";
-    alert(message);
+    let alertBox = document.getElementById("custom-alert");
+    alertBox.textContent = message;
+    alertBox.style.display = "block";
+    setTimeout(() => {
+        alertBox.style.display = "none";
+    }, 3000);
 };
 
 selectTag.forEach((tag, id) => {
