@@ -23,7 +23,7 @@ Before setting up the project, make sure you have the following installed:
 * _git clone https://github.com/hafsa-aarifeen/Simple-Translator.git_
 
 #### 02. Navigate to the Project Directory
-* _cd your-repository_
+* _cd Simple-Translator_
 
 #### 03. Open the Project in a Code Editor
 * _code ._
