@@ -53,7 +53,3 @@ The project uses the Google Translate API. You need to obtain an API key from Go
 * 📄 script.js-----------Main JavaScript logic
 * 📄 countries.js-------List of supported languages
 * 📄 README.md-----Project documentation
-
-## License
-This project is licensed under the MIT License.
-
